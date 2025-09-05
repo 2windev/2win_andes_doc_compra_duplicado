@@ -125,10 +125,51 @@ define(['N/search', './2win_dao'],
             }
         }
 
+        function obtenerNotaCredito(id_tipo, rut_proveedor, folio) {
+
+            try {
+
+                var tabItem = {
+                    type: "vendorcredit",
+                    settings: [{ "name": "consolidationtype", "value": "NONE" }, { "name": "includeperiodendtransactions", "value": "F" }],
+                    filters:
+                        [
+                            ["type", "anyof", "VendCred"],					/* Tipo Transacción */
+                            "AND",
+                            ["custbody_tipodocumentoelectronico", "anyof", id_tipo],		/* Tipo documento */
+                            "AND",
+                            ["vendor.custentity_2wrut", "is", rut_proveedor],				/* RUT Proveedor */
+                            "AND",
+                            ["number", "equalto", folio],					/* Folio documento */
+                            "AND",
+                            ["mainline", "is", "T"]
+                        ],
+                    columns:
+                        [
+                            search.createColumn({ name: "internalid", label: "id" }),
+                            search.createColumn({ name: "subsidiarynohierarchy", label: "Empresa" }),
+                            search.createColumn({ name: "postingperiod", label: "Mes" }),
+                            search.createColumn({ name: "tranid", label: "Num.Doc." }),
+                            search.createColumn({ name: "trandate", label: "Fecha" }),
+                            search.createColumn({ name: "duedate", label: "Vencimiento" }),
+                            search.createColumn({ name: "custentity_2wrut", join: "vendor", label: "RUT" }),
+                            search.createColumn({ name: "entityid", join: "vendor", label: "Proveedor" })
+                        ]
+                }
+
+                return dao.getDataSearch(tabItem);
+
+            } catch (error) {
+                log.error({ title: 'obtenerNotaCredito - Excepcion', details: error });
+                throw error;
+            }
+        }
+
         return {
             obtenerFacturaAfecta: obtenerFacturaAfecta,
             obtenerFacturaExenta: obtenerFacturaExenta,
-            obtenerBoletaHonorario: obtenerBoletaHonorario
+            obtenerBoletaHonorario: obtenerBoletaHonorario,
+            obtenerNotaCredito: obtenerNotaCredito
         }
     }
 );

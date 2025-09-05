@@ -15,11 +15,12 @@ define(['N/ui/dialog', './domain/2win_dom_doc_compra'],
             log.debug("saveRecord - context", context);
 
             var currentRecord = context.currentRecord;
+            var tipo = currentRecord.type;
             var tipo_documento = currentRecord.getValue({ fieldId: 'custbody_tipodocumentoelectronico' });
             var id_proveedor = currentRecord.getValue({ fieldId: 'entity' });
             var folio = currentRecord.getValue({ fieldId: 'tranid' });
             
-            log.debug("saveRecord - Type", currentRecord.type);
+            log.debug("saveRecord - Type", tipo);
             log.debug("saveRecord - Tipo documento", tipo_documento);
             log.debug("saveRecord - ID Proveedor", id_proveedor);
             log.debug("saveRecord - Folio", folio);
@@ -30,7 +31,7 @@ define(['N/ui/dialog', './domain/2win_dom_doc_compra'],
             }
 
             // Validar si ya existe documento con mismo tipo, rut proveedor y folio
-            var mensaje = dom_doc_compra.existeDocumento(tipo_documento, id_proveedor, folio);
+            var mensaje = dom_doc_compra.existeDocumento(tipo, tipo_documento, id_proveedor, folio);
             log.debug("saveRecord - Mensaje validación", mensaje);
 
             if (mensaje != null) {
