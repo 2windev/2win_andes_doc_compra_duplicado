@@ -2,7 +2,7 @@ define(['N/search', './2win_dao'],
 
     function (search, dao) {
 
-        function obtenerFacturaAfecta(id_tipo, rut_proveedor, folio) {
+        function obtenerFacturaAfecta(id_tipo, rut_proveedor, folio, id_interno) {
 
             try {
 
@@ -20,6 +20,8 @@ define(['N/search', './2win_dao'],
                             ["number", "equalto", folio],					/* Folio documento */
                             "AND",
                             ["formulanumeric: {total} - {netamountnotax}", "notequalto", "0"],	/* Afecto */
+                            "AND",
+                            ["internalidnumber", "notequalto", id_interno], /* Excluir ID interno (para evitar que se encuentre a si mismo) */
                             "AND",
                             ["mainline", "is", "T"]
                         ],
@@ -44,7 +46,7 @@ define(['N/search', './2win_dao'],
             }
         }
 
-        function obtenerFacturaExenta(id_tipo, rut_proveedor, folio) {
+        function obtenerFacturaExenta(id_tipo, rut_proveedor, folio, id_interno) {
 
             try {
 
@@ -62,6 +64,8 @@ define(['N/search', './2win_dao'],
                             ["number", "equalto", folio],					/* Folio documento */
                             "AND",
                             ["formulanumeric: {total} - {netamountnotax}", "equalto", "0"],	/* Exento */
+                            "AND",
+                            ["internalidnumber", "notequalto", id_interno], /* Excluir ID interno (para evitar que se encuentre a si mismo) */
                             "AND",
                             ["mainline", "is", "T"]
                         ],
@@ -86,7 +90,7 @@ define(['N/search', './2win_dao'],
             }
         }
 
-        function obtenerBoletaHonorario(rut_prestador, folio) {
+        function obtenerBoletaHonorario(rut_prestador, folio, id_interno) {
 
             try {
 
@@ -102,6 +106,8 @@ define(['N/search', './2win_dao'],
                             ["number", "equalto", folio],					/* Folio boleta */
                             "AND",
                             ["custcol_4601_witaxcode.internalidnumber", "isnotempty", ""],	/* Define si es boleta en lugar de factura */
+                            "AND",
+                            ["internalidnumber", "notequalto", id_interno], /* Excluir ID interno (para evitar que se encuentre a si mismo) */
                             "AND",
                             ["mainline", "is", "T"]
                         ],
@@ -125,7 +131,7 @@ define(['N/search', './2win_dao'],
             }
         }
 
-        function obtenerNotaCredito(id_tipo, rut_proveedor, folio) {
+        function obtenerNotaCredito(id_tipo, rut_proveedor, folio, id_interno) {
 
             try {
 
@@ -134,13 +140,15 @@ define(['N/search', './2win_dao'],
                     settings: [{ "name": "consolidationtype", "value": "NONE" }, { "name": "includeperiodendtransactions", "value": "F" }],
                     filters:
                         [
-                            ["type", "anyof", "VendCred"],					/* Tipo Transacción */
+                            ["type", "anyof", "VendCred"], /* Tipo Transacción */
                             "AND",
-                            ["custbody_tipodocumentoelectronico", "anyof", id_tipo],		/* Tipo documento */
+                            ["custbody_tipodocumentoelectronico", "anyof", id_tipo], /* Tipo documento */
                             "AND",
-                            ["vendor.custentity_2wrut", "is", rut_proveedor],				/* RUT Proveedor */
+                            ["vendor.custentity_2wrut", "is", rut_proveedor], /* RUT Proveedor */
                             "AND",
-                            ["number", "equalto", folio],					/* Folio documento */
+                            ["number", "equalto", folio], /* Folio documento */
+                            "AND",
+                            ["internalidnumber", "notequalto", id_interno], /* Excluir ID interno (para evitar que se encuentre a si mismo) */
                             "AND",
                             ["mainline", "is", "T"]
                         ],

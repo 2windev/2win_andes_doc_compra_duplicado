@@ -15,11 +15,17 @@ define(['N/ui/dialog', './domain/2win_dom_doc_compra'],
             log.debug("saveRecord - context", context);
 
             var currentRecord = context.currentRecord;
+            var id = currentRecord.id;
             var tipo = currentRecord.type;
             var tipo_documento = currentRecord.getValue({ fieldId: 'custbody_tipodocumentoelectronico' });
             var id_proveedor = currentRecord.getValue({ fieldId: 'entity' });
             var folio = currentRecord.getValue({ fieldId: 'tranid' });
+
+            if (id == null || id == '') {
+                id = "0"; // Nuevo registro
+            }
             
+            log.debug("saveRecord - Id", id);
             log.debug("saveRecord - Type", tipo);
             log.debug("saveRecord - Tipo documento", tipo_documento);
             log.debug("saveRecord - ID Proveedor", id_proveedor);
@@ -28,10 +34,10 @@ define(['N/ui/dialog', './domain/2win_dom_doc_compra'],
             if (tipo_documento == null || tipo_documento == '' || id_proveedor == null || id_proveedor == '' || folio == null || folio == '') {
                 log.debug("saveRecord - Campos requeridos necesarios", "No se puede validar documento duplicado, faltan campos requeridos (tipo documento, proveedor o folio)");
                 return true;
-            }
+            }            
 
             // Validar si ya existe documento con mismo tipo, rut proveedor y folio
-            var mensaje = dom_doc_compra.existeDocumento(tipo, tipo_documento, id_proveedor, folio);
+            var mensaje = dom_doc_compra.existeDocumento(tipo, tipo_documento, id_proveedor, folio, id);
             log.debug("saveRecord - Mensaje validación", mensaje);
 
             if (mensaje != null) {
